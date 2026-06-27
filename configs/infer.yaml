@@ -1,0 +1,32 @@
+# Inference / serving config. Loaded via `dococr --config configs/infer.yaml serve`.
+project_title: Document-Level OCR System
+author: Le Dinh Minh Quan
+
+ocr:
+  engine: auto                # auto | tesseract | easyocr | stub
+  lang: eng
+  dpi: 200
+  psm: 3
+
+layout:
+  detect_layout: true
+  reading_order: xycut
+  born_digital_min_chars: 40
+  classify_blocks: true
+
+preprocess:
+  deskew: true
+  denoise: true
+  binarize: adaptive
+
+agent:
+  quality_min: 0.35
+  ocr_confidence_min: 0.55      # below => flag the region for human review
+  correct_max_edit_ratio: 0.35  # reject a "correction" that rewrites too much
+  correct_min_conf: 0.5
+  llm_fallback_enabled: false   # true + DOCOCR_LLM_API_KEY => LLM brain for flagged regions
+  llm_model: claude-haiku-4-5-20251001
+
+serving:
+  model_version: v1
+  max_pages: 30

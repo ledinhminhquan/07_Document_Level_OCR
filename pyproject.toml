@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dococr"
+version = "1.0.0"
+description = "Document-Level OCR System — OCR + layout/reading-order + a trainable post-OCR correction model + an agentic pipeline"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Le Dinh Minh Quan" }]
+keywords = ["nlp", "ocr", "document-ai", "post-ocr-correction", "byt5", "layout", "agent"]
+
+# Core deps only — the package, the synthetic generator, the agent (with stub OCR +
+# identity corrector + numpy/PIL preprocessing), and the tests all run with just
+# these. Heavy ML / OCR / serving libs are extras, imported lazily.
+dependencies = [
+    "numpy>=1.23",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "pillow>=9.5",
+]
+
+[project.optional-dependencies]
+ml = [
+    "torch>=2.1", "transformers>=4.40", "datasets>=2.18", "accelerate>=0.30",
+    "sentencepiece>=0.1.99", "evaluate>=0.4", "jiwer>=3.0",
+]
+ocr = [
+    "pytesseract>=0.3.10", "pymupdf>=1.24", "opencv-python-headless>=4.8",
+    "pdf2image>=1.17", "symspellpy>=6.7",
+]
+api = [
+    "fastapi>=0.110", "uvicorn[standard]>=0.29", "python-multipart>=0.0.9", "gradio>=4.0",
+]
+report = ["reportlab>=4.0", "python-pptx>=0.6.23", "matplotlib>=3.7"]
+dev = ["pytest>=7.4", "ruff>=0.4"]
+all = [
+    "torch>=2.1", "transformers>=4.40", "datasets>=2.18", "accelerate>=0.30",
+    "sentencepiece>=0.1.99", "evaluate>=0.4", "jiwer>=3.0",
+    "pytesseract>=0.3.10", "pymupdf>=1.24", "opencv-python-headless>=4.8", "pdf2image>=1.17", "symspellpy>=6.7",
+    "fastapi>=0.110", "uvicorn[standard]>=0.29", "python-multipart>=0.0.9", "gradio>=4.0",
+    "reportlab>=4.0", "python-pptx>=0.6.23", "matplotlib>=3.7",
+]
+
+[project.scripts]
+dococr = "dococr.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dococr = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"

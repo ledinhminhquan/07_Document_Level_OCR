@@ -1,0 +1,26 @@
+services:
+  dococr:
+    build: .
+    image: dococr:latest
+    ports:
+      - "7860:7860"
+    environment:
+      DOCOCR_ARTIFACTS_DIR: /artifacts
+      DOCOCR_OCR_ENGINE: auto
+      HF_HOME: /root/.cache/huggingface
+      # DOCOCR_LLM_API_KEY: ${ANTHROPIC_API_KEY}   # optional LLM brain
+    volumes:
+      - ./artifacts:/artifacts
+      - hf_cache:/root/.cache/huggingface
+    command: uvicorn dococr.api.app_combined:app --host 0.0.0.0 --port 7860
+    # For GPU inference/training, uncomment (needs nvidia-container-toolkit + CUDA image):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  hf_cache:
